@@ -1,48 +1,60 @@
 const express=require("express");
 const fs=require("fs");
 const path=require("path");
-const cookieParser=require("cookie-parser");
-const users=require("./rout/user.js");
+const session=require("express-session")
+//const cookieParser=require("cookie-parser");
+//const users=require("./rout/user.js");
 const app=express();
-app.use("/user",users);
-app.use(cookieParser("secertcode"));
+//app.use("/user",users);
+//app.use(cookieParser("secertcode"));
 app.use(express.urlencoded({extended:true}));
 ////
-// app.get("/post",(req,res)=>{
-//     res.send("I am first post !");
-// })
-// app.get("/post/new",(req,res)=>{
-//     res.send("I am new just post !");
-// })
-// app.post("/post",(req,res)=>{
-//     res.send("I am post");
-// })
-// app.post("/post/new/",(req,res)=>{
-//     console.log("I am new post");
-// })
-app.get("/setcookis",(req,res)=>{
-    res.cookie("great","hello");
-    res.cookie("hii","Tapan");
+
+const sessionOption={
+    secret:"mysupersecret",
+    resave:false,
+    saveUninitialized:true
+}
+app.use(session(sessionOption));
+
+// app.get("/setcookis",(req,res)=>{
+//     res.cookie("great","hello");
+//     res.cookie("hii","Tapan");
     
-    res.send("sent cookie");
+//     res.send("sent cookie");
 
-})
-app.get("/",(req,res)=>{
-    console.dir(req.cookies);
-    res.send("I am root");
-})
-app.get("/greet",(req,res)=>{
-    let {hii}=req.cookies;
-    console.log(hii);
-})
-app.get("/set",(req,res)=>{
-    res.cookie("country","india",{signed:true});
-    res.send("send !");
+// })
+// app.get("/",(req,res)=>{
+//     console.dir(req.cookies);
+//     res.send("I am root");
+// })
+// app.get("/greet",(req,res)=>{
+//     let {hii}=req.cookies;
+//     console.log(hii);
+// })
+// app.get("/set",(req,res)=>{
+//     res.cookie("country","india",{signed:true});
+//     res.send("send !");
 
-})
-app.get("/getcookie",(req,res)=>{
-    console.log(req.signedCookies);
-    res.send("verify");
+// })
+// app.get("/getcookie",(req,res)=>{
+//     console.log(req.signedCookies);
+//     res.send("verify");
+// })
+
+// app.get("/test",(req,res)=>{
+//     res.send("test is successfull !");
+// })
+
+app.get("/reqcount",(req,res)=>{
+    if(req.session.count){
+        req.session.count++;
+    }
+    else{
+        req.session.count=1;
+    }
+    res.send(`count resqest ${req.session.count}`);
+    
 })
 
 app.listen(3000,(err)=>{
